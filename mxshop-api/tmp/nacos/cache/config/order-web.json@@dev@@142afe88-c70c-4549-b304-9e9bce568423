@@ -1,0 +1,29 @@
+{
+  "host": "192.168.26.1",
+  "name": "order-web",
+  "port": 8023,
+  "tags": ["mxshop", "bobby", "order", "web"],
+  "goods_srv": {
+    "name": "goods-srv"
+  },
+  "order_srv": {
+    "name": "order-srv"
+  },
+  "inventory_srv": {
+    "name": "inventory-srv"
+  },
+  "jwt": {
+    "key": "5$!UEmvB#nRB@Iwab#Sy!zofKEOGLRtE"
+  },
+  "consul": {
+    "host": "192.168.26.2",
+    "port": 8500
+  },
+  "alipay": {
+    "app_id": "2016080600180695",
+    "private_key": "",
+    "ali_public_key": "",
+    "notify_url": "http://oxq32b0hcs.52http.com/o/v1/pay/alipay/notify",
+    "return_url": "http://127.0.0.1:8089"
+  }
+}

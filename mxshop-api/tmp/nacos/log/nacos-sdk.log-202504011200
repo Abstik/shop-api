@@ -1,0 +1,11 @@
+2025-04-01T12:43:06.860+0800	[31mERROR[0m	api</v1/cs/configs>,method:<GET>, params:<{"dataId":"goods-web.json","group":"dev","tenant":"142afe88-c70c-4549-b304-9e9bce568423"}>, call domain error:<[404] config data not exist
+> , result:<config data not exist
+>
+2025-04-01T12:43:06.869+0800	[31mERROR[0m	api</v1/cs/configs>,method:<GET>, params:<{"dataId":"goods-web.json","group":"dev","tenant":"142afe88-c70c-4549-b304-9e9bce568423"}>, call domain error:<[404] config data not exist
+> , result:<config data not exist
+>
+2025-04-01T12:43:06.887+0800	[31mERROR[0m	api</v1/cs/configs>,method:<GET>, params:<{"dataId":"goods-web.json","group":"dev","tenant":"142afe88-c70c-4549-b304-9e9bce568423"}>, call domain error:<[404] config data not exist
+> , result:<config data not exist
+>
+2025-04-01T12:43:06.887+0800	[34mINFO[0m	get config from server error:[404] config data not exist
+ 

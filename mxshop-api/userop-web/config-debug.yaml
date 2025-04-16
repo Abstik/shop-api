@@ -1,0 +1,7 @@
+host: '192.168.26.2'
+port: 8848
+namespace: 'b6b0dce6-cd79-4ed0-86f2-720601a06f12'
+user: 'nacos'
+password: 'nacos'
+dataid: 'userop-web.json'
+group: 'dev'

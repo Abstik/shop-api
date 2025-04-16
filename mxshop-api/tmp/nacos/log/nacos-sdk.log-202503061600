@@ -1,0 +1,11 @@
+2025-03-06T16:57:46.742+0800	[31mERROR[0m	api</v1/cs/configs>,method:<GET>, params:<{"dataId":"user-web.yaml","group":"pro","tenant":"24bb8404-cf82-4a5f-beb4-6e32facd2d05"}>, call domain error:<[404] config data not exist
+> , result:<config data not exist
+>
+2025-03-06T16:57:46.761+0800	[31mERROR[0m	api</v1/cs/configs>,method:<GET>, params:<{"dataId":"user-web.yaml","group":"pro","tenant":"24bb8404-cf82-4a5f-beb4-6e32facd2d05"}>, call domain error:<[404] config data not exist
+> , result:<config data not exist
+>
+2025-03-06T16:57:46.771+0800	[31mERROR[0m	api</v1/cs/configs>,method:<GET>, params:<{"dataId":"user-web.yaml","group":"pro","tenant":"24bb8404-cf82-4a5f-beb4-6e32facd2d05"}>, call domain error:<[404] config data not exist
+> , result:<config data not exist
+>
+2025-03-06T16:57:46.773+0800	[34mINFO[0m	get config from server error:[404] config data not exist
+ 

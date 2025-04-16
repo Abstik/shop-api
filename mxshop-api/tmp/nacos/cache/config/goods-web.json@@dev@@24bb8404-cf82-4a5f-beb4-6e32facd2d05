@@ -1,0 +1,18 @@
+{
+  "host": "192.168.26.1",
+  "name": "goods-web",
+  "port": 8022,
+  "tags": ["mxshop", "bobby", "goods", "web"],
+  "goods_srv": {
+    "host": "192.168.26.1",
+    "port": 50052,
+    "name": "goods-srv"
+  },
+  "jwt": {
+    "key": "5$!UEmvB#nRB@Iwab#Sy!zofKEOGLRtE"
+  },
+  "consul": {
+    "host": "192.168.26.2",
+    "port": 8500
+  }
+}
