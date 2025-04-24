@@ -8,6 +8,8 @@ import (
 )
 
 func InitGoodsRouter(Router *gin.RouterGroup) {
+	// 创建商品路由组并配置链路追踪
+	// 每次调用商品路由组下的路由时，都会经过链路追踪中间件
 	GoodsRouter := Router.Group("goods").Use(middlewares.Trace())
 	{
 		// 条件查询商品列表（url参数）

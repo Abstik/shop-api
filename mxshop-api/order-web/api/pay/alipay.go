@@ -37,7 +37,7 @@ func Notify(ctx *gin.Context) {
 		return
 	}
 
-	_, err = global.OrderSrvClient.UpdateOrderStatus(context.Background(), &proto.OrderStatus{
+	_, err = global.OrderSrvClient.UpdateOrderStatus(context.WithValue(context.Background(), "ginContext", ctx), &proto.OrderStatus{
 		OrderSn: notify.OutTradeNo,          // 商户订单号
 		Status:  string(notify.TradeStatus), // 交易状态
 	})

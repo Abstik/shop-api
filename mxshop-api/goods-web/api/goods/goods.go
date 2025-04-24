@@ -65,24 +65,30 @@ func List(ctx *gin.Context) {
 	brandIdInt, _ := strconv.Atoi(brandId)
 	request.Brand = int32(brandIdInt)
 
-	//请求商品的service服务、负载均衡
-	//parent, _ := ctx.Get("parentSpan")
-	//opentracing.ContextWithSpan(context.Background(), parent.(opentracing.Span))
-
+	// 配置限流器
 	e, b := sentinel.Entry("goods-list", sentinel.WithTrafficType(base.Inbound))
 	if b != nil {
+		// 如果被限流
 		ctx.JSON(http.StatusTooManyRequests, gin.H{
 			"msg": "请求过于频繁，请稍后重试",
 		})
 		return
 	}
+
+	// sentinel限流：访问以下资源前先做门卫拦截
+
+	// 把当前的 gin.Context（变量名是ctx）塞入go语言的context.Context中，并指定键名为ginContext
+	// 改造后的otgrpc源码中，通过context.Context获取gin.Context，通过gin.Context获取tracer和parentSpan
 	r, err := global.GoodsSrvClient.GoodsList(context.WithValue(context.Background(), "ginContext", ctx), request)
 	if err != nil {
 		zap.S().Errorw("[List] 查询 【商品列表】失败")
 		api.HandleGrpcErrorToHttp(err, ctx)
 		return
 	}
+
+	// 关闭限流器
 	e.Exit()
+
 	reMap := map[string]interface{}{
 		"total": r.Total,
 	}
@@ -131,7 +137,7 @@ func New(ctx *gin.Context) {
 	// 创建商品
 	goodsClient := global.GoodsSrvClient
 	// 创建商品时不进行是否新品，是否热门等状态的设置（在管理商品时统一设置）
-	rsp, err := goodsClient.CreateGoods(context.Background(), &proto.CreateGoodsInfo{
+	rsp, err := goodsClient.CreateGoods(context.WithValue(context.Background(), "ginContext", ctx), &proto.CreateGoodsInfo{
 		Name:            goodsForm.Name,
 		GoodsSn:         goodsForm.GoodsSn,
 		Stocks:          goodsForm.Stocks,
@@ -164,6 +170,8 @@ func Detail(ctx *gin.Context) {
 		return
 	}
 
+	// 把当前的 gin.Context（变量名是ctx）塞入go语言的context.Context中，并指定键名为ginContext
+	// 改造后的otgrpc源码中，通过context.Context获取gin.Context，通过gin.Context获取tracer和parentSpan
 	r, err := global.GoodsSrvClient.GetGoodsDetail(context.WithValue(context.Background(), "ginContext", ctx), &proto.GoodInfoRequest{
 		Id: int32(i),
 	})
@@ -206,7 +214,7 @@ func Delete(ctx *gin.Context) {
 		ctx.Status(http.StatusNotFound)
 		return
 	}
-	_, err = global.GoodsSrvClient.DeleteGoods(context.Background(), &proto.DeleteGoodsInfo{Id: int32(i)})
+	_, err = global.GoodsSrvClient.DeleteGoods(context.WithValue(context.Background(), "ginContext", ctx), &proto.DeleteGoodsInfo{Id: int32(i)})
 	if err != nil {
 		api.HandleGrpcErrorToHttp(err, ctx)
 		return
@@ -238,7 +246,7 @@ func UpdateStatus(ctx *gin.Context) {
 
 	id := ctx.Param("id")
 	i, err := strconv.ParseInt(id, 10, 32)
-	if _, err = global.GoodsSrvClient.UpdateGoods(context.Background(), &proto.CreateGoodsInfo{
+	if _, err = global.GoodsSrvClient.UpdateGoods(context.WithValue(context.Background(), "ginContext", ctx), &proto.CreateGoodsInfo{
 		Id:     int32(i),
 		IsHot:  *goodsStatusForm.IsHot, // 对指针类型解引用取出bool值
 		IsNew:  *goodsStatusForm.IsNew,
@@ -262,7 +270,7 @@ func Update(ctx *gin.Context) {
 
 	id := ctx.Param("id")
 	i, err := strconv.ParseInt(id, 10, 32)
-	if _, err = global.GoodsSrvClient.UpdateGoods(context.Background(), &proto.CreateGoodsInfo{
+	if _, err = global.GoodsSrvClient.UpdateGoods(context.WithValue(context.Background(), "ginContext", ctx), &proto.CreateGoodsInfo{
 		Id:              int32(i),
 		Name:            goodsForm.Name,
 		GoodsSn:         goodsForm.GoodsSn,

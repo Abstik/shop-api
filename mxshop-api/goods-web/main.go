@@ -33,7 +33,7 @@ func main() {
 	//5. 初始化srv的连接
 	initialize.InitSrvConn()
 
-	//6.初始化sentinel
+	//6.初始化sentinel进行熔断限流
 	initialize.InitSentinel()
 
 	viper.AutomaticEnv()

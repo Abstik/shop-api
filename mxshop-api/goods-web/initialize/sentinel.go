@@ -6,21 +6,21 @@ import (
 	"go.uber.org/zap"
 )
 
+// 初始化InitSentinel，进行熔断限流
 func InitSentinel() {
 	err := sentinel.InitDefault()
 	if err != nil {
 		zap.S().Fatalf("初始化sentinel 异常: %v", err)
 	}
 
-	//配置限流规则
-	//这种配置应该从nacos中读取
+	// 配置限流规则
 	_, err = flow.LoadRules([]*flow.Rule{
 		{
 			Resource:               "goods-list",
-			TokenCalculateStrategy: flow.Direct,
-			ControlBehavior:        flow.Reject, //匀速通过
-			Threshold:              20,          //100ms只能就已经来了1W的并发， 1s就是10W的并发
-			StatIntervalInMs:       6000,
+			TokenCalculateStrategy: flow.Direct, // 直接使用规则中的 Threshold 表示当前统计周期内的最大Token数量
+			ControlBehavior:        flow.Reject, // 请求数超过了阈值，就直接拒绝
+			Threshold:              20,          // 最多访问次数
+			StatIntervalInMs:       6000,        // 统计周期，单位毫秒
 		},
 	})
 

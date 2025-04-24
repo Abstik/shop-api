@@ -1,6 +1,10 @@
 package otgrpc
 
 import (
+	"io"
+	"runtime"
+	"sync/atomic"
+
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
@@ -9,9 +13,6 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
-	"io"
-	"runtime"
-	"sync/atomic"
 )
 
 // OpenTracingClientInterceptor returns a grpc.UnaryClientInterceptor suitable
@@ -46,16 +47,25 @@ func OpenTracingClientInterceptor(tracer opentracing.Tracer, optFuncs ...Option)
 			parentCtx = parent.Context()
 		}
 
+		// 在此处修改源码
+		// 以下
+		// 根据键名获取gin.Context（gin上下文）
 		ginContext := ctx.Value("ginContext")
 		switch ginContext.(type) {
 		case *gin.Context:
+			// 获取tracing.go中gin上下文中set保存的tracer
 			if itracer, ok := ginContext.(*gin.Context).Get("tracer"); ok {
 				tracer = itracer.(opentracing.Tracer)
 			}
+
+			// 获取tracing.go中gin上下文中set保存的parentSpan
+			// 然后通过 parentSpan.Context() 获取 trace 上下文
+			// 这样在 gRPC 侧就能创建「当前 span 是 Gin 中 span 的子 span」，最终使链路是连续的
 			if parentSpan, ok := ginContext.(*gin.Context).Get("parentSpan"); ok {
 				parentCtx = parentSpan.(*jaegerClient.Span).Context()
 			}
 		}
+		// 以上
 
 		if otgrpcOpts.inclusionFunc != nil &&
 			!otgrpcOpts.inclusionFunc(parentCtx, method, req, resp) {

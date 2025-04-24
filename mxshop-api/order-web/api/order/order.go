@@ -44,7 +44,7 @@ func List(ctx *gin.Context) {
 	request.PagePerNums = int32(perNumsInt)
 
 	// 查询订单列表
-	rsp, err := global.OrderSrvClient.OrderList(context.Background(), &request)
+	rsp, err := global.OrderSrvClient.OrderList(context.WithValue(context.Background(), "ginContext", ctx), &request)
 	if err != nil {
 		zap.S().Errorw("获取订单列表失败")
 		api.HandleGrpcErrorToHttp(err, ctx)
@@ -89,6 +89,9 @@ func New(ctx *gin.Context) {
 
 	// 获取userID
 	userId, _ := ctx.Get("userId")
+
+	// 把当前的 gin.Context（变量名是ctx）塞入go语言的context.Context中，并指定键名为ginContext
+	// 改造后的otgrpc源码中，通过context.Context获取gin.Context，通过gin.Context获取tracer和parentSpan
 	rsp, err := global.OrderSrvClient.CreateOrder(context.WithValue(context.Background(), "ginContext", ctx), &proto.OrderRequest{
 		UserId:  int32(userId.(uint)),
 		Name:    orderForm.Name,
@@ -138,7 +141,7 @@ func Detail(ctx *gin.Context) {
 	}
 	// 如果是管理员则request.UserId默认为0
 
-	rsp, err := global.OrderSrvClient.OrderDetail(context.Background(), &request)
+	rsp, err := global.OrderSrvClient.OrderDetail(context.WithValue(context.Background(), "ginContext", ctx), &request)
 	if err != nil {
 		zap.S().Errorw("获取订单详情失败")
 		api.HandleGrpcErrorToHttp(err, ctx)

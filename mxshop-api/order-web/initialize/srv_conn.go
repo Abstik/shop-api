@@ -2,10 +2,12 @@ package initialize
 
 import (
 	"fmt"
-	_ "github.com/mbobakov/grpc-consul-resolver" // It's important
+
+	_ "github.com/mbobakov/grpc-consul-resolver"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+
 	"mxshop-api/order-web/global"
 	"mxshop-api/order-web/proto"
 	"mxshop-api/order-web/utils/otgrpc"
@@ -14,10 +16,10 @@ import (
 func InitSrvConn() {
 	consulInfo := global.ServerConfig.ConsulInfo
 	goodsConn, err := grpc.Dial(
-		fmt.Sprintf("consul://%s:%d/%s?wait=14s", consulInfo.Host, consulInfo.Port, global.ServerConfig.GoodsSrvInfo.Name),
+		fmt.Sprintf("consul://%s:%d/%s?wait=14s", consulInfo.Host, consulInfo.Port, global.ServerConfig.OrderSrvInfo.Name),
 		grpc.WithInsecure(),
-		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy": "round_robin"}`),
-		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
+		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy": "round_robin"}`),                    // 指定负载均衡策略为“轮询”（round robin）
+		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())), // 添加OpenTracing客户端拦截器
 	)
 	if err != nil {
 		zap.S().Fatal("[InitSrvConn] 连接 【商品服务失败】")

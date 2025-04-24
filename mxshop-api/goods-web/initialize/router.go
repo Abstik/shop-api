@@ -1,10 +1,12 @@
 package initialize
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+
 	"mxshop-api/goods-web/middlewares"
 	"mxshop-api/goods-web/router"
-	"net/http"
 )
 
 func Routers() *gin.Engine {

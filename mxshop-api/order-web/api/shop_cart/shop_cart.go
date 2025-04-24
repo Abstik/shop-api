@@ -18,7 +18,7 @@ import (
 func List(ctx *gin.Context) {
 	// 获取购物车信息
 	userId, _ := ctx.Get("userId")
-	rsp, err := global.OrderSrvClient.CartItemList(context.Background(), &proto.UserInfo{
+	rsp, err := global.OrderSrvClient.CartItemList(context.WithValue(context.Background(), "ginContext", ctx), &proto.UserInfo{
 		Id: int32(userId.(uint)),
 	})
 	if err != nil {
@@ -40,7 +40,7 @@ func List(ctx *gin.Context) {
 	}
 
 	// 请求商品服务，根据商品id列表批量获取商品信息
-	goodsRsp, err := global.GoodsSrvClient.BatchGetGoods(context.Background(), &proto.BatchGoodsIdInfo{
+	goodsRsp, err := global.GoodsSrvClient.BatchGetGoods(context.WithValue(context.Background(), "ginContext", ctx), &proto.BatchGoodsIdInfo{
 		Id: ids,
 	})
 	if err != nil {
@@ -83,7 +83,7 @@ func New(ctx *gin.Context) {
 	}
 
 	// 检查商品是否存在
-	_, err := global.GoodsSrvClient.GetGoodsDetail(context.Background(), &proto.GoodInfoRequest{
+	_, err := global.GoodsSrvClient.GetGoodsDetail(context.WithValue(context.Background(), "ginContext", ctx), &proto.GoodInfoRequest{
 		Id: itemForm.GoodsId,
 	})
 	if err != nil {
@@ -94,7 +94,7 @@ func New(ctx *gin.Context) {
 
 	/*将商品添加到购物车后，直接扣减库存，所以要先查询库存信息*/
 	// 获取商品的库存信息
-	invRsp, err := global.InventorySrvClient.InvDetail(context.Background(), &proto.GoodsInvInfo{
+	invRsp, err := global.InventorySrvClient.InvDetail(context.WithValue(context.Background(), "ginContext", ctx), &proto.GoodsInvInfo{
 		GoodsId: itemForm.GoodsId,
 	})
 	if err != nil {
@@ -112,7 +112,7 @@ func New(ctx *gin.Context) {
 
 	// 调用订单微服务，将商品添加到购物车
 	userId, _ := ctx.Get("userId")
-	rsp, err := global.OrderSrvClient.CreateCartItem(context.Background(), &proto.CartItemRequest{
+	rsp, err := global.OrderSrvClient.CreateCartItem(context.WithValue(context.Background(), "ginContext", ctx), &proto.CartItemRequest{
 		GoodsId: itemForm.GoodsId,
 		UserId:  int32(userId.(uint)),
 		Nums:    itemForm.Nums,
@@ -164,7 +164,7 @@ func Update(ctx *gin.Context) {
 	}
 
 	// 调用订单微服务，更新购物车记录
-	_, err = global.OrderSrvClient.UpdateCartItem(context.Background(), &request)
+	_, err = global.OrderSrvClient.UpdateCartItem(context.WithValue(context.Background(), "ginContext", ctx), &request)
 	if err != nil {
 		zap.S().Errorw("更新购物车记录失败")
 		api.HandleGrpcErrorToHttp(err, ctx)
@@ -188,7 +188,7 @@ func Delete(ctx *gin.Context) {
 	userId, _ := ctx.Get("userId")
 
 	// 删除购物车记录（一种商品）
-	_, err = global.OrderSrvClient.DeleteCartItem(context.Background(), &proto.CartItemRequest{
+	_, err = global.OrderSrvClient.DeleteCartItem(context.WithValue(context.Background(), "ginContext", ctx), &proto.CartItemRequest{
 		UserId:  int32(userId.(uint)),
 		GoodsId: int32(i),
 	})

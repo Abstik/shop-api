@@ -10,8 +10,6 @@ import (
 
 // 管理员权限校验
 func IsAdminAuth() gin.HandlerFunc {
-	//将一些共用的代码抽出来然后共用 - 版本管理
-	//如果不抽出来
 	return func(ctx *gin.Context) {
 		// 从请求上下文中获取set好的数据
 		claims, _ := ctx.Get("claims")

@@ -13,7 +13,7 @@ type ServerConfig struct {
 	JWTInfo    JWTConfig    `mapstructure:"jwt" json:"jwt"`
 	ConsulInfo ConsulConfig `mapstructure:"consul" json:"consul"`
 	AliPayInfo AlipayConfig `mapstructure:"alipay" json:"alipay"`
-	JaegerInfo JaegerConfig `mapstructure:"consul" json:"jaeger"`
+	JaegerInfo JaegerConfig `mapstructure:"jaeger" json:"jaeger"`
 }
 
 type GoodsSrvConfig struct {

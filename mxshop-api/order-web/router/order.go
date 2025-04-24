@@ -10,6 +10,7 @@ import (
 
 // 初始化订单路由
 func InitOrderRouter(Router *gin.RouterGroup) {
+	// 订单相关路由组，并配置链路追踪
 	OrderRouter := Router.Group("orders").Use(middlewares.JWTAuth()).Use(middlewares.Trace())
 	{
 		OrderRouter.GET("", order.List)       // 订单列表
