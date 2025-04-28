@@ -25,5 +25,10 @@
     "ali_public_key": "",
     "notify_url": "http://oxq32b0hcs.52http.com/o/v1/pay/alipay/notify",
     "return_url": "http://127.0.0.1:8089"
+  },
+  "jaeger": {
+    "host": "192.168.26.2",
+    "port": 6831,
+    "name": "mxshop"
   }
 }

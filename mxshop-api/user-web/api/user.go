@@ -84,16 +84,14 @@ func HandleValidatorError(c *gin.Context, err error) {
 
 // 分页查询用户
 func GetUserList(ctx *gin.Context) {
-	//拨号连接用户grpc服务器 跨域的问题 - 后端解决 也可以前端来解决
 	claims, _ := ctx.Get("claims")
 	currentUser := claims.(*models.CustomClaims)
 	zap.S().Infof("访问用户: %d", currentUser.ID)
-	//生成grpc的client并调用接口
 
-	// 获取参数pn 指定第几页
+	// 获取参数pn，指定第几页
 	pn := ctx.DefaultQuery("pn", "0")
 	pnInt, _ := strconv.Atoi(pn)
-	// 获取参数psize 指定每页显示多少条数据
+	// 获取参数psize，指定每页显示多少条数据
 	pSize := ctx.DefaultQuery("psize", "10")
 	pSizeInt, _ := strconv.Atoi(pSize)
 
@@ -108,7 +106,7 @@ func GetUserList(ctx *gin.Context) {
 		return
 	}
 
-	// 将UserListResonse类型的rsp中的Total,Data数据封装成reMap进行返回
+	// 将UserListResponse类型的rsp中的Total,Data数据封装成reMap进行返回
 	reMap := gin.H{
 		"total": rsp.Total,
 	}
@@ -117,7 +115,6 @@ func GetUserList(ctx *gin.Context) {
 		user := reponse.UserResponse{
 			Id:       value.Id,
 			NickName: value.NickName,
-			//Birthday: time.Time(time.Unix(int64(value.BirthDay), 0)).Format("2006-01-02"),
 			Birthday: reponse.JsonTime(time.Unix(int64(value.BirthDay), 0)),
 			Gender:   value.Gender,
 			Mobile:   value.Mobile,
@@ -139,7 +136,7 @@ func PassWordLogin(c *gin.Context) {
 		return
 	}
 
-	//验证码验证
+	// 验证码验证
 	if store.Verify(passwordLoginForm.CaptchaId, passwordLoginForm.Captcha, false) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"captcha": "验证码错误",
@@ -147,7 +144,8 @@ func PassWordLogin(c *gin.Context) {
 		return
 	}
 
-	//登录的逻辑
+	// 登录的逻辑
+	// 先查询用户是否存在
 	if rsp, err := global.UserSrvClient.GetUserByMobile(context.Background(), &proto.MobileRequest{
 		Mobile: passwordLoginForm.Mobile,
 	}); err != nil {
@@ -165,8 +163,8 @@ func PassWordLogin(c *gin.Context) {
 			}
 			return
 		}
-	} else { // 如果没有错误
-		// 已查询到用户，进行密码校验
+	} else { // 如果查询到用户
+		// 进行密码校验
 		if passRsp, pasErr := global.UserSrvClient.CheckPassWord(context.Background(), &proto.PasswordCheckInfo{
 			Password:          passwordLoginForm.PassWord,
 			EncryptedPassword: rsp.PassWord,
@@ -176,15 +174,15 @@ func PassWordLogin(c *gin.Context) {
 			})
 		} else {
 			if passRsp.Success { // 密码校验成功
-				//生成token
+				// 生成token
 				j := middlewares.NewJWT()
 				claims := models.CustomClaims{
 					ID:          uint(rsp.Id),
 					NickName:    rsp.NickName,
 					AuthorityId: uint(rsp.Role),
 					StandardClaims: jwt.StandardClaims{
-						NotBefore: time.Now().Unix(),               //签名的生效时间
-						ExpiresAt: time.Now().Unix() + 60*60*24*30, //30天过期
+						NotBefore: time.Now().Unix(),               // 签名的生效时间
+						ExpiresAt: time.Now().Unix() + 60*60*24*30, // 30天过期
 						Issuer:    "imooc",
 					},
 				}
@@ -219,7 +217,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// 验证码
+	// 校验手机短信验证码
 	rdb := redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d", global.ServerConfig.RedisInfo.Host, global.ServerConfig.RedisInfo.Port),
 	})
@@ -245,7 +243,7 @@ func Register(c *gin.Context) {
 		Mobile:   registerForm.Mobile,
 	})
 	if err != nil {
-		zap.S().Errorf("[Register] 查询 【新建用户失败】失败: %s", err.Error())
+		zap.S().Errorf("【新建用户失败】失败: %s", err.Error())
 		HandleGrpcErrorToHttp(err, c)
 		return
 	}
@@ -311,14 +309,16 @@ func UpdateUser(ctx *gin.Context) {
 	currentUser := claims.(*models.CustomClaims)
 	zap.S().Infof("访问用户: %d", currentUser.ID)
 
-	//将前端传递过来的日期格式转换成int
-	loc, _ := time.LoadLocation("Local") //local的L必须大写
+	// 将前端传递过来的日期格式转换成int
+	// 用于获取本地时区的 Location 对象，确保时间处理时遵循正确的时区。
+	loc, _ := time.LoadLocation("Local")
+	// 将字符串（例如 "2006-01-02" 格式）解析成 time.Time 类型
 	birthDay, _ := time.ParseInLocation("2006-01-02", updateUserForm.Birthday, loc)
 	_, err := global.UserSrvClient.UpdateUser(context.Background(), &proto.UpdateUserInfo{
 		Id:       int32(currentUser.ID),
 		NickName: updateUserForm.Name,
 		Gender:   updateUserForm.Gender,
-		BirthDay: uint64(birthDay.Unix()),
+		BirthDay: uint64(birthDay.Unix()), // 转换为 Unix 时间戳
 	})
 	if err != nil {
 		HandleGrpcErrorToHttp(err, ctx)

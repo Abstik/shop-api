@@ -11,9 +11,9 @@ import (
 var (
 	Trans ut.Translator
 
-	ServerConfig *config.ServerConfig = &config.ServerConfig{}
+	ServerConfig = &config.ServerConfig{}
 
-	NacosConfig *config.NacosConfig = &config.NacosConfig{}
+	NacosConfig = &config.NacosConfig{}
 
 	// 商品服务
 	GoodsSrvClient proto.GoodsClient

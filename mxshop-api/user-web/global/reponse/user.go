@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// 自定义的时间类型，用于序列化成json时，返回的时间格式
+// 自定义的时间类型，用于指定序列化成json时的时间格式
 type JsonTime time.Time
 
 // 序列化成json时，返回的时间格式
@@ -14,10 +14,10 @@ func (j JsonTime) MarshalJSON() ([]byte, error) {
 	return []byte(stmp), nil
 }
 
+// 用户信息响应结构体
 type UserResponse struct {
-	Id       int32  `json:"id"`
-	NickName string `json:"name"`
-	//Birthday string `json:"birthday"`
+	Id       int32    `json:"id"`
+	NickName string   `json:"name"`
 	Birthday JsonTime `json:"birthday"`
 	Gender   string   `json:"gender"`
 	Mobile   string   `json:"mobile"`

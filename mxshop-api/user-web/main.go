@@ -26,6 +26,7 @@ func main() {
 
 	//2. 初始化配置文件（viper）
 	initialize.InitConfig()
+	zap.S().Info(global.ServerConfig)
 
 	//3. 初始化路由
 	Router := initialize.Routers()
@@ -41,7 +42,6 @@ func main() {
 	// 自动加载环境变量，并根据环境类型（本地开发或线上环境）确定端口号
 	// 如果是本地开发环境，端口号固定；如果是线上环境，则动态获取端口号
 	viper.AutomaticEnv()
-
 	// 如果是本地开发环境端口号固定
 	debug := viper.GetBool("MXSHOP_DEBUG")
 	if !debug { // 线上环境则获取空闲端口号并更新为服务器配置的端口号
@@ -53,8 +53,10 @@ func main() {
 
 	// 注册自定义的验证器
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok { // 检查当前的验证引擎是否是指定类型的validator.Validate
-		_ = v.RegisterValidation("mobile", myvalidator.ValidateMobile) // 注册校验手机号的验证器
+		// 注册自定义的校验手机号验证规则
+		_ = v.RegisterValidation("mobile", myvalidator.ValidateMobile)
 
+		// 注册自定义的错误提示
 		_ = v.RegisterTranslation("mobile", global.Trans,
 			func(ut ut.Translator) error {
 				return ut.Add("mobile", "{0}非法的手机号码!", true)

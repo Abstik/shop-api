@@ -7,8 +7,7 @@ import (
 	"mxshop-api/user-web/middlewares"
 )
 
-//用户相关路由
-
+// 用户相关路由
 func InitUserRouter(Router *gin.RouterGroup) {
 	UserRouter := Router.Group("user")
 	{
@@ -23,5 +22,4 @@ func InitUserRouter(Router *gin.RouterGroup) {
 		// 修改用户信息
 		UserRouter.PATCH("update", middlewares.JWTAuth(), api.UpdateUser)
 	}
-	//服务注册和发现
 }

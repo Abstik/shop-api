@@ -6,8 +6,7 @@ import (
 	"mxshop-api/user-web/api"
 )
 
-//验证码相关路由
-
+// 验证码相关路由
 func InitBaseRouter(Router *gin.RouterGroup) {
 	BaseRouter := Router.Group("base")
 	{

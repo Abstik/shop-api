@@ -26,7 +26,7 @@ type UserSrvConfig struct {
 
 // jwt配置
 type JWTConfig struct {
-	SigningKey string `mapstructure:"key" json:"key"`
+	SigningKey string `mapstructure:"key" json:"key"` // jwt签名密钥
 }
 
 // 阿里云配置

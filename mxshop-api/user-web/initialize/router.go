@@ -13,7 +13,7 @@ import (
 
 func Routers() *gin.Engine {
 	Router := gin.Default()
-	// 测试健康检查
+	// 配置健康检查
 	Router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"code":    http.StatusOK,
@@ -21,7 +21,7 @@ func Routers() *gin.Engine {
 		})
 	})
 
-	//配置跨域
+	// 配置跨域
 	Router.Use(middlewares.Cors())
 
 	// 创建总的路由组

@@ -72,7 +72,7 @@ func InitConfig() {
 		"clientConfig":  cc, // 客户端行为配置（超时、日志目录等）
 	})
 	/*根据 sc 中的服务器地址尝试建立连接。
-	使用 cc 中的配置初始化客户端行为（如超时时间、缓存策略等*/
+	使用 cc 中的配置初始化客户端行为（如超时时间、缓存策略等）*/
 	if err != nil {
 		panic(err)
 	}
@@ -92,15 +92,4 @@ func InitConfig() {
 	if err != nil {
 		zap.S().Fatalf("读取nacos配置失败： %s", err.Error())
 	}
-	fmt.Println(&global.ServerConfig)
-
-	/*// 监听配置文件的变化
-	err = configClient.ListenConfig(vo.ConfigParam{
-		DataId: global.NacosConfig.DataId,
-		Group:  global.NacosConfig.Group,
-		OnChange: func(namespace, group, dataId, data string) {
-			fmt.Println("配置文件变化")
-			fmt.Println("group:" + group + ", dataId:" + dataId + "data:" + data)
-		},
-	})*/
 }

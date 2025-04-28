@@ -1,6 +1,6 @@
 package forms
 
 type SendSmsForm struct {
-	Mobile string `form:"mobile" json:"mobile" binding:"required,mobile"` //手机号码格式有规范可寻， 自定义validator
-	Type   uint   `form:"type" json:"type" binding:"required,oneof=1 2"`
+	Mobile string `form:"mobile" json:"mobile" binding:"required,mobile"`
+	Type   uint   `form:"type" json:"type" binding:"required,oneof=1 2"` // 1 表示注册 2表示找回密码
 }

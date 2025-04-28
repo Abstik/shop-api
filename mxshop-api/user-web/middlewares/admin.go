@@ -1,9 +1,11 @@
 package middlewares
 
 import (
-	"github.com/gin-gonic/gin"
-	"mxshop-api/user-web/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"mxshop-api/user-web/models"
 )
 
 // 检验管理员权限

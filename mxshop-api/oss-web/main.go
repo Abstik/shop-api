@@ -2,16 +2,18 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+
 	"mxshop-api/oss-web/global"
 	"mxshop-api/oss-web/initialize"
 	"mxshop-api/oss-web/utils"
 	"mxshop-api/oss-web/utils/register/consul"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 func main() {

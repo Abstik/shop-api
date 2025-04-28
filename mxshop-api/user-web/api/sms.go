@@ -17,11 +17,9 @@ import (
 	"mxshop-api/user-web/global"
 )
 
-// 发送短信验证码
-
+// 生成短信验证码
 func GenerateSmsCode(witdh int) string {
 	//生成width长度的短信验证码
-
 	numeric := [10]byte{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 	r := len(numeric)
 	rand.Seed(time.Now().UnixNano())
@@ -33,6 +31,7 @@ func GenerateSmsCode(witdh int) string {
 	return sb.String()
 }
 
+// TODO 发送短信验证码
 func SendSms(ctx *gin.Context) {
 	sendSmsForm := forms.SendSmsForm{}
 	if err := ctx.ShouldBind(&sendSmsForm); err != nil {
