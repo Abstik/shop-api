@@ -45,7 +45,7 @@ type ConsulConfig struct {
 type RedisConfig struct {
 	Host   string `mapstructure:"host" json:"host"`
 	Port   int    `mapstructure:"port" json:"port"`
-	Expire int    `mapstructure:"expire" json:"expire"`
+	Expire int    `mapstructure:"expire" json:"expire"` // redis中的过期时间
 }
 
 // nacos配置

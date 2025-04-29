@@ -45,7 +45,7 @@ func InitConfig() {
 	if err := v.Unmarshal(global.NacosConfig); err != nil {
 		panic(err)
 	}
-	zap.S().Infof("配置信息: &+v", global.NacosConfig)
+	zap.S().Infof("nacos配置信息: &+v", global.NacosConfig)
 
 	// 3.初始化 Nacos 连接参数，从 nacos 中读取配置信息
 	// 初始化nacos客户端

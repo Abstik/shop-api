@@ -61,6 +61,22 @@ func New(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+func Delete(ctx *gin.Context) {
+	id := ctx.Param("id")
+	i, err := strconv.ParseInt(id, 10, 32)
+	if err != nil {
+		ctx.Status(http.StatusNotFound)
+		return
+	}
+	_, err = global.GoodsSrvClient.DeleteBanner(context.WithValue(context.Background(), "ginContext", ctx), &proto.BannerRequest{Id: int32(i)})
+	if err != nil {
+		api.HandleGrpcErrorToHttp(err, ctx)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "")
+}
+
 func Update(ctx *gin.Context) {
 	// 获取表单参数
 	bannerForm := forms.BannerForm{}
@@ -88,20 +104,4 @@ func Update(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusOK)
-}
-
-func Delete(ctx *gin.Context) {
-	id := ctx.Param("id")
-	i, err := strconv.ParseInt(id, 10, 32)
-	if err != nil {
-		ctx.Status(http.StatusNotFound)
-		return
-	}
-	_, err = global.GoodsSrvClient.DeleteBanner(context.WithValue(context.Background(), "ginContext", ctx), &proto.BannerRequest{Id: int32(i)})
-	if err != nil {
-		api.HandleGrpcErrorToHttp(err, ctx)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, "")
 }

@@ -24,12 +24,12 @@ func Routers() *gin.Engine {
 	// 配置跨域
 	Router.Use(middlewares.Cors())
 
-	// 创建总的路由组
+	// 创建总路由组
 	ApiGroup := Router.Group("/u/v1")
 
 	// 初始化用户路由组
 	router.InitUserRouter(ApiGroup)
-	// 初始化基础路由组(短信相关)
+	// 初始化基础路由组(验证码相关)
 	router.InitBaseRouter(ApiGroup)
 
 	return Router

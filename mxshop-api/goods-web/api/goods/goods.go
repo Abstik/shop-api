@@ -156,8 +156,6 @@ func New(ctx *gin.Context) {
 		return
 	}
 
-	//如何设置库存
-	//TODO 商品的库存 - 分布式事务
 	ctx.JSON(http.StatusOK, rsp)
 }
 
@@ -190,7 +188,7 @@ func Detail(ctx *gin.Context) {
 		"desc_images": r.DescImages,
 		"front_image": r.GoodsFrontImage,
 		"shop_price":  r.ShopPrice,
-		"ctegory": map[string]interface{}{
+		"category": map[string]interface{}{
 			"id":   r.Category.Id,
 			"name": r.Category.Name,
 		},

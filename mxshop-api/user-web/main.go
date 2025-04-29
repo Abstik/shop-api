@@ -6,9 +6,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gin-gonic/gin/binding"
-	ut "github.com/go-playground/universal-translator"
-	"github.com/go-playground/validator/v10"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -17,7 +14,6 @@ import (
 	"mxshop-api/user-web/initialize"
 	"mxshop-api/user-web/utils"
 	"mxshop-api/user-web/utils/register/consul"
-	myvalidator "mxshop-api/user-web/validator"
 )
 
 func main() {
@@ -26,7 +22,7 @@ func main() {
 
 	//2. 初始化配置文件（viper）
 	initialize.InitConfig()
-	zap.S().Info(global.ServerConfig)
+	zap.S().Infof("服务配置信息：%v", global.ServerConfig)
 
 	//3. 初始化路由
 	Router := initialize.Routers()
@@ -51,7 +47,7 @@ func main() {
 		}
 	}
 
-	// 注册自定义的验证器
+	/*// 注册自定义的验证器
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok { // 检查当前的验证引擎是否是指定类型的validator.Validate
 		// 注册自定义的校验手机号验证规则
 		_ = v.RegisterValidation("mobile", myvalidator.ValidateMobile)
@@ -65,7 +61,7 @@ func main() {
 				t, _ := ut.T("mobile", fe.Field())
 				return t
 			})
-	}
+	}*/
 
 	// consul服务注册中心
 	// 向consul服务中心注册自己，以便其他服务发现和调用

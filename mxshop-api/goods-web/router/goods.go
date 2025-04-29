@@ -7,6 +7,7 @@ import (
 	"mxshop-api/goods-web/middlewares"
 )
 
+// 商品相关路由组
 func InitGoodsRouter(Router *gin.RouterGroup) {
 	// 创建商品路由组并配置链路追踪
 	// 每次调用商品路由组下的路由时，都会经过链路追踪中间件

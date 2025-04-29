@@ -10,7 +10,6 @@ import (
 func InitBannerRouter(Router *gin.RouterGroup) {
 	BannerRouter := Router.Group("banners").Use(middlewares.Trace())
 	{
-		// 所有请求都需要token以及管理员权限
 		BannerRouter.GET("", banners.List)                                                            // 轮播图列表页
 		BannerRouter.DELETE("/:id", middlewares.JWTAuth(), middlewares.IsAdminAuth(), banners.Delete) // 删除轮播图
 		BannerRouter.POST("", middlewares.JWTAuth(), middlewares.IsAdminAuth(), banners.New)          // 新建轮播图

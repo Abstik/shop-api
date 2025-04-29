@@ -37,7 +37,7 @@ func InitConfig() {
 	if err := v.Unmarshal(global.NacosConfig); err != nil {
 		panic(err)
 	}
-	zap.S().Infof("配置信息: &v", global.NacosConfig)
+	zap.S().Infof("nacos配置信息: &v", global.NacosConfig)
 
 	//从nacos中读取配置信息
 	sc := []constant.ServerConfig{
@@ -69,16 +69,12 @@ func InitConfig() {
 	content, err := configClient.GetConfig(vo.ConfigParam{
 		DataId: global.NacosConfig.DataId,
 		Group:  global.NacosConfig.Group})
-
 	if err != nil {
 		panic(err)
 	}
-	//fmt.Println(content) //字符串 - yaml
-	//想要将一个json字符串转换成struct，需要去设置这个struct的tag
+
 	err = json.Unmarshal([]byte(content), &global.ServerConfig)
 	if err != nil {
 		zap.S().Fatalf("读取nacos配置失败： %s", err.Error())
 	}
-	fmt.Println(&global.ServerConfig)
-
 }

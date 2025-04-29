@@ -12,8 +12,8 @@ func InitBaseRouter(Router *gin.RouterGroup) {
 	{
 		// 生成验证码
 		BaseRouter.GET("captcha", api.GetCaptcha)
-		// 发送短信验证码
-		BaseRouter.POST("send_sms", api.SendSms)
+		// 发送邮箱验证码
+		BaseRouter.POST("send_sms", api.SendVerificationCode)
 	}
 
 }

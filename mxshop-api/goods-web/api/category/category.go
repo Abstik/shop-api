@@ -16,6 +16,7 @@ import (
 	"mxshop-api/goods-web/proto"
 )
 
+// 查询所有分类
 func List(ctx *gin.Context) {
 	r, err := global.GoodsSrvClient.GetAllCategorysList(context.WithValue(context.Background(), "ginContext", ctx), &empty.Empty{})
 	if err != nil {
@@ -32,6 +33,7 @@ func List(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
+// 根据id查询当前分类及其子分类
 func Detail(ctx *gin.Context) {
 	id := ctx.Param("id")
 	i, err := strconv.ParseInt(id, 10, 32)
@@ -71,6 +73,7 @@ func Detail(ctx *gin.Context) {
 	return
 }
 
+// 创建分类
 func New(ctx *gin.Context) {
 	categoryForm := forms.CategoryForm{}
 	if err := ctx.ShouldBindJSON(&categoryForm); err != nil {
@@ -99,6 +102,7 @@ func New(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, request)
 }
 
+// 删除分类
 func Delete(ctx *gin.Context) {
 	id := ctx.Param("id")
 	i, err := strconv.ParseInt(id, 10, 32)
@@ -108,6 +112,22 @@ func Delete(ctx *gin.Context) {
 	}
 
 	//TODO 1. 先查询出该分类写的所有子分类
+	/*subCategoryList, err := global.GoodsSrvClient.GetSubCategory(context.WithValue(context.Background(), "ginContext", ctx), &proto.CategoryListRequest{
+		Id: int32(i),
+	})
+	if err != nil {
+		api.HandleGrpcErrorToHttp(err, ctx)
+		return
+	}
+	if subCategoryList != nil {
+		for _, subCategory := range subCategoryList.SubCategorys {
+			_, err = global.GoodsSrvClient.DeleteCategory(
+				context.WithValue(context.Background(), "ginContext", ctx),
+				&proto.DeleteCategoryRequest{Id: subCategory.Id},
+			)
+		}
+	}*/
+
 	//2. 将所有的分类全部逻辑删除
 	//3. 将该分类下的所有的商品逻辑删除
 	_, err = global.GoodsSrvClient.DeleteCategory(context.WithValue(context.Background(), "ginContext", ctx), &proto.DeleteCategoryRequest{Id: int32(i)})
@@ -119,6 +139,7 @@ func Delete(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
+// 修改分类
 func Update(ctx *gin.Context) {
 	categoryForm := forms.UpdateCategoryForm{}
 	if err := ctx.ShouldBindJSON(&categoryForm); err != nil {

@@ -11,10 +11,10 @@ import (
 func InitCategoryRouter(Router *gin.RouterGroup) {
 	CategoryRouter := Router.Group("categorys").Use(middlewares.Trace())
 	{
-		CategoryRouter.GET("", category.List)          // 商品类别列表页
-		CategoryRouter.DELETE("/:id", category.Delete) // 删除分类
-		CategoryRouter.GET("/:id", category.Detail)    // 获取分类详情
-		CategoryRouter.POST("", category.New)          //新建分类
-		CategoryRouter.PUT("/:id", category.Update)    //修改分类信息
+		CategoryRouter.GET("", category.List)                                                            // 查询所有分类
+		CategoryRouter.DELETE("/:id", middlewares.JWTAuth(), middlewares.IsAdminAuth(), category.Delete) // 删除分类
+		CategoryRouter.GET("/:id", category.Detail)                                                      // 根据id查询当前分类及其子分类
+		CategoryRouter.POST("", middlewares.JWTAuth(), middlewares.IsAdminAuth(), category.New)          // 新建分类
+		CategoryRouter.PUT("/:id", middlewares.JWTAuth(), middlewares.IsAdminAuth(), category.Update)    // 修改分类
 	}
 }

@@ -147,13 +147,6 @@ func GetCategoryBrandList(ctx *gin.Context) {
 
 // 分页查询品牌分类关联列表
 func CategoryBrandList(ctx *gin.Context) {
-	//所有的list返回的数据结构
-	/*
-		{
-			"total": 100,
-			"data":[{},{}]
-		}
-	*/
 	rsp, err := global.GoodsSrvClient.CategoryBrandList(context.WithValue(context.Background(), "ginContext", ctx), &proto.CategoryBrandFilterRequest{})
 	if err != nil {
 		api.HandleGrpcErrorToHttp(err, ctx)
@@ -219,6 +212,7 @@ func UpdateCategoryBrand(ctx *gin.Context) {
 		return
 	}
 
+	// 获取路径参数id，此id为类别和品牌关联关系的id
 	id := ctx.Param("id")
 	i, err := strconv.ParseInt(id, 10, 32)
 	if err != nil {
