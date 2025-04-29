@@ -37,7 +37,7 @@ func List(ctx *gin.Context) {
 		return
 	}
 
-	//请求商品服务
+	// 请求商品服务
 	goods, err := global.GoodsSrvClient.BatchGetGoods(context.Background(), &proto.BatchGoodsIdInfo{
 		Id: ids,
 	})
@@ -52,12 +52,16 @@ func List(ctx *gin.Context) {
 	}
 
 	goodsList := make([]interface{}, 0)
+	// 遍历用户的收藏列表
 	for _, item := range userFavRsp.Data {
+		// 先记录商品id
 		data := gin.H{
 			"id": item.GoodsId,
 		}
 
+		// 遍历查询到的商品详情列表
 		for _, good := range goods.Data {
+			// 封装商品信息
 			if item.GoodsId == good.Id {
 				data["name"] = good.Name
 				data["shop_price"] = good.ShopPrice

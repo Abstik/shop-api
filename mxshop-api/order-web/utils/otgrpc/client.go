@@ -2,6 +2,10 @@ package otgrpc
 
 import (
 	"fmt"
+	"io"
+	"runtime"
+	"sync/atomic"
+
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
@@ -10,9 +14,6 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
-	"io"
-	"runtime"
-	"sync/atomic"
 )
 
 // OpenTracingClientInterceptor returns a grpc.UnaryClientInterceptor suitable

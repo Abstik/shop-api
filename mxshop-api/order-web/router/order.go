@@ -16,6 +16,7 @@ func InitOrderRouter(Router *gin.RouterGroup) {
 		OrderRouter.GET("", order.List)       // 订单列表
 		OrderRouter.POST("", order.New)       // 新建订单
 		OrderRouter.GET("/:id", order.Detail) // 订单详情
+		// TODO 更新订单状态接口
 	}
 
 	// 支付宝回调通知（当用户在支付宝完成支付后，支付宝会调用这个接口给服务端进行通知）

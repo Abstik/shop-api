@@ -87,6 +87,7 @@ func New(ctx *gin.Context) {
 }
 
 func Delete(ctx *gin.Context) {
+	// 获取用户id
 	id := ctx.Param("id")
 	i, err := strconv.ParseInt(id, 10, 32)
 	if err != nil {

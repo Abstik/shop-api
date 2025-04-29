@@ -27,8 +27,10 @@ func List(ctx *gin.Context) {
 	// 如果是管理员用户则返回所有的订单
 	model := claims.(*models.CustomClaims)
 	if model.AuthorityId == 1 {
+		// 如果是普通用户，则设置用户id
 		request.UserId = int32(userId.(uint))
 	}
+	// 如果是管理员用户，id为零值，gorm进行查询时忽略零值直接全表查询
 
 	// 获取分页数
 	pages := ctx.DefaultQuery("p", "0")
@@ -38,9 +40,6 @@ func List(ctx *gin.Context) {
 	// 获取每页的数量
 	perNums := ctx.DefaultQuery("pnum", "0")
 	perNumsInt, _ := strconv.Atoi(perNums)
-	request.PagePerNums = int32(perNumsInt)
-
-	request.Pages = int32(pagesInt)
 	request.PagePerNums = int32(perNumsInt)
 
 	// 查询订单列表
@@ -60,16 +59,15 @@ func List(ctx *gin.Context) {
 		tmpMap := map[string]interface{}{}
 
 		tmpMap["id"] = item.Id
-		tmpMap["status"] = item.Status
-		tmpMap["pay_type"] = item.PayType
 		tmpMap["user"] = item.UserId
+		tmpMap["order_sn"] = item.OrderSn
+		tmpMap["pay_type"] = item.PayType
+		tmpMap["status"] = item.Status
 		tmpMap["post"] = item.Post
 		tmpMap["total"] = item.Total
 		tmpMap["address"] = item.Address
 		tmpMap["name"] = item.Name
 		tmpMap["mobile"] = item.Mobile
-		tmpMap["order_sn"] = item.OrderSn
-		tmpMap["id"] = item.Id
 		tmpMap["add_time"] = item.AddTime
 
 		orderList = append(orderList, tmpMap)
@@ -78,7 +76,6 @@ func List(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, reMap)
 }
 
-// 链路的起点在哪里 http请求
 // 新建订单
 func New(ctx *gin.Context) {
 	// 获取参数
@@ -139,7 +136,7 @@ func Detail(ctx *gin.Context) {
 		// 如果非管理员，则封装userID
 		request.UserId = int32(userId.(uint))
 	}
-	// 如果是管理员则request.UserId默认为0
+	// 如果是管理员则request.UserId默认为零值，gorm查询时忽略零值
 
 	rsp, err := global.OrderSrvClient.OrderDetail(context.WithValue(context.Background(), "ginContext", ctx), &request)
 	if err != nil {

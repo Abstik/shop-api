@@ -54,8 +54,11 @@ func List(ctx *gin.Context) {
 	}
 
 	goodsList := make([]interface{}, 0)
+	// 对购物车中的每个商品
 	for _, item := range rsp.Data {
+		// 对批量获取到的商品信息中的每个商品
 		for _, good := range goodsRsp.Data {
+			// 如果匹配，则封装商品信息
 			if good.Id == item.GoodsId {
 				tmpMap := map[string]interface{}{}
 				tmpMap["id"] = item.Id

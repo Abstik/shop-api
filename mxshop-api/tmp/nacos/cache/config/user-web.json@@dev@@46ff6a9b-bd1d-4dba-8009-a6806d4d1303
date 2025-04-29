@@ -4,8 +4,6 @@
   "tags": ["mxshop", "imooc", "user", "web"],
   "port": 8021,
   "user_srv": {
-    "host": "192.168.26.1",
-    "port": 50051,
     "name": "user-srv"
   },
   "jwt": {
@@ -17,7 +15,7 @@
     "expire": 300
   },
   "redis": {
-    "host": "192.168.26.1",
+    "host": "127.0.0.1",
     "port": 6379
   },
   "consul": {

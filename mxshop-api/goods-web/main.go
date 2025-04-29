@@ -22,7 +22,6 @@ func main() {
 
 	//2. 初始化配置文件
 	initialize.InitConfig()
-	zap.S().Infof("服务配置信息：%v", global.ServerConfig)
 
 	//3. 初始化routers
 	Router := initialize.Routers()

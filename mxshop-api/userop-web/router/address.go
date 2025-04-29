@@ -2,16 +2,17 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"mxshop-api/userop-web/api/address"
 	"mxshop-api/userop-web/middlewares"
 )
 
 func InitAddressRouter(Router *gin.RouterGroup) {
-	AddressRouter := Router.Group("address")
+	AddressRouter := Router.Group("address").Use(middlewares.JWTAuth())
 	{
-		AddressRouter.GET("", middlewares.JWTAuth(), address.List)          // 轮播图列表页
-		AddressRouter.DELETE("/:id", middlewares.JWTAuth(), address.Delete) // 删除轮播图
-		AddressRouter.POST("", middlewares.JWTAuth(), address.New)          //新建轮播图
-		AddressRouter.PUT("/:id", middlewares.JWTAuth(), address.Update)    //修改轮播图信息
+		AddressRouter.GET("", address.List)
+		AddressRouter.POST("", address.New)
+		AddressRouter.DELETE("/:id", address.Delete)
+		AddressRouter.PUT("/:id", address.Update)
 	}
 }

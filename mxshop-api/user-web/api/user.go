@@ -147,7 +147,7 @@ func PassWordLogin(c *gin.Context) {
 	// 登录的逻辑
 	// 先查询用户是否存在
 	if rsp, err := global.UserSrvClient.GetUserByMobile(context.Background(), &proto.MobileRequest{
-		Mobile: passwordLoginForm.Email,
+		Mobile: passwordLoginForm.Mobile,
 	}); err != nil {
 		// 如果出现错误
 		if e, ok := status.FromError(err); ok {
@@ -211,7 +211,7 @@ func PassWordLogin(c *gin.Context) {
 
 // 用户注册
 func Register(c *gin.Context) {
-	registerForm := forms.RegisterForm{}
+	registerForm := &forms.RegisterForm{}
 	if err := c.ShouldBind(&registerForm); err != nil {
 		HandleValidatorError(c, err)
 		return
@@ -221,7 +221,7 @@ func Register(c *gin.Context) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d", global.ServerConfig.RedisInfo.Host, global.ServerConfig.RedisInfo.Port),
 	})
-	value, err := rdb.Get(context.Background(), registerForm.Email).Result()
+	value, err := rdb.Get(context.Background(), registerForm.Mobile).Result()
 	if errors.Is(err, redis.Nil) { // 从redis中获取不到验证码
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": "验证码错误",
@@ -238,9 +238,9 @@ func Register(c *gin.Context) {
 
 	// 新增用户
 	user, err := global.UserSrvClient.CreateUser(context.Background(), &proto.CreateUserInfo{
-		NickName: registerForm.Email,
+		NickName: registerForm.Mobile,
 		PassWord: registerForm.PassWord,
-		Mobile:   registerForm.Email,
+		Mobile:   registerForm.Mobile,
 	})
 	if err != nil {
 		zap.S().Errorf("【新建用户失败】失败: %s", err.Error())

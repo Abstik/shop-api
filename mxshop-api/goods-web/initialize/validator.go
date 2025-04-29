@@ -2,9 +2,10 @@ package initialize
 
 import (
 	"fmt"
-	"mxshop-api/goods-web/global"
 	"reflect"
 	"strings"
+
+	"mxshop-api/goods-web/global"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/en"

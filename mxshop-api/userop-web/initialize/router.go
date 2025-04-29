@@ -10,7 +10,14 @@ import (
 )
 
 func Routers() *gin.Engine {
-	Router := gin.Default()
+	Router := gin.New()
+	// 添加Recovery中间件
+	Router.Use(gin.Recovery())
+	// 添加自定义Logger中间件，跳过/health路径
+	Router.Use(gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/health"},
+	}))
+
 	Router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"code":    http.StatusOK,
@@ -22,9 +29,9 @@ func Routers() *gin.Engine {
 	Router.Use(middlewares.Cors())
 
 	ApiGroup := Router.Group("/up/v1")
-	router.InitUserFavRouter(ApiGroup)
-	router.InitMessageRouter(ApiGroup)
 	router.InitAddressRouter(ApiGroup)
+	router.InitMessageRouter(ApiGroup)
+	router.InitUserFavRouter(ApiGroup)
 
 	return Router
 }

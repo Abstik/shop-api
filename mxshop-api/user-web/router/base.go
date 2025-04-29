@@ -10,9 +10,9 @@ import (
 func InitBaseRouter(Router *gin.RouterGroup) {
 	BaseRouter := Router.Group("base")
 	{
-		// 生成验证码
+		// 登录时生成图片验证码
 		BaseRouter.GET("captcha", api.GetCaptcha)
-		// 发送邮箱验证码
+		// 注册时发送短信验证码
 		BaseRouter.POST("send_sms", api.SendVerificationCode)
 	}
 

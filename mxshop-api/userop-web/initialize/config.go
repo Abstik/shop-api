@@ -79,6 +79,5 @@ func InitConfig() {
 	if err != nil {
 		zap.S().Fatalf("读取nacos配置失败： %s", err.Error())
 	}
-	fmt.Println(&global.ServerConfig)
-
+	zap.S().Infof("服务配置信息：%v", global.ServerConfig)
 }

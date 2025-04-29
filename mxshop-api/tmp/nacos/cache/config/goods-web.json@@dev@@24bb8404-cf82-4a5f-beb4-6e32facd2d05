@@ -4,8 +4,6 @@
   "port": 8022,
   "tags": ["mxshop", "bobby", "goods", "web"],
   "goods_srv": {
-    "host": "192.168.26.1",
-    "port": 50052,
     "name": "goods-srv"
   },
   "jwt": {

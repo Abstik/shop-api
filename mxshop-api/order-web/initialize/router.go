@@ -1,14 +1,23 @@
 package initialize
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+
 	"mxshop-api/order-web/middlewares"
 	"mxshop-api/order-web/router"
-	"net/http"
 )
 
 func Routers() *gin.Engine {
-	Router := gin.Default()
+	Router := gin.New()
+	// 添加Recovery中间件
+	Router.Use(gin.Recovery())
+	// 添加自定义Logger中间件，跳过/health路径
+	Router.Use(gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/health"},
+	}))
+
 	Router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"code":    http.StatusOK,

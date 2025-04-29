@@ -222,6 +222,7 @@ func Delete(ctx *gin.Context) {
 	return
 }
 
+// TODO 商品的库存
 func Stocks(ctx *gin.Context) {
 	id := ctx.Param("id")
 	_, err := strconv.ParseInt(id, 10, 32)
@@ -229,8 +230,6 @@ func Stocks(ctx *gin.Context) {
 		ctx.Status(http.StatusNotFound)
 		return
 	}
-
-	//TODO 商品的库存
 	return
 }
 
