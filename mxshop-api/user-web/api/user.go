@@ -86,7 +86,7 @@ func HandleValidatorError(c *gin.Context, err error) {
 func GetUserList(ctx *gin.Context) {
 	claims, _ := ctx.Get("claims")
 	currentUser := claims.(*models.CustomClaims)
-	zap.S().Infof("访问用户: %d", currentUser.ID)
+	zap.S().Infof("访问用户id: %d", currentUser.ID)
 
 	// 获取参数pn，指定第几页
 	pn := ctx.DefaultQuery("pn", "0")
@@ -137,12 +137,12 @@ func PassWordLogin(c *gin.Context) {
 	}
 
 	// 验证码验证
-	if store.Verify(passwordLoginForm.CaptchaId, passwordLoginForm.Captcha, false) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"captcha": "验证码错误",
-		})
-		return
-	}
+	//if store.Verify(passwordLoginForm.CaptchaId, passwordLoginForm.Captcha, false) {
+	//	c.JSON(http.StatusBadRequest, gin.H{
+	//		"captcha": "验证码错误",
+	//	})
+	//	return
+	//}
 
 	// 登录的逻辑
 	// 先查询用户是否存在

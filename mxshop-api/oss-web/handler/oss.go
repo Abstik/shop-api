@@ -2,13 +2,14 @@ package handler
 
 import (
 	"fmt"
-	"mxshop-api/oss-web/global"
 	"net/http"
 	"net/url"
 	"strings"
 
-	"github.com/gin-gonic/gin"
+	"mxshop-api/oss-web/global"
 	"mxshop-api/oss-web/utils"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Token(c *gin.Context) {

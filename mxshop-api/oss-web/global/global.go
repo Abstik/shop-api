@@ -2,6 +2,7 @@ package global
 
 import (
 	ut "github.com/go-playground/universal-translator"
+
 	"mxshop-api/oss-web/config"
 )
 

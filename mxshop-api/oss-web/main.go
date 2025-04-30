@@ -48,12 +48,6 @@ func main() {
 		zap.S().Panic("服务注册失败:", err.Error())
 	}
 
-	/*
-		1. S()可以获取一个全局的sugar，可以让我们自己设置一个全局的logger
-		2. 日志是分级别的，debug， info ， warn， error， fetal
-		3. S函数和L函数很有用， 提供了一个全局的安全访问logger的途径
-	*/
-	zap.S().Debugf("启动服务器, 端口： %d", global.ServerConfig.Port)
 	go func() {
 		if err := Router.Run(fmt.Sprintf(":%d", global.ServerConfig.Port)); err != nil {
 			zap.S().Panic("启动失败:", err.Error())
@@ -69,5 +63,4 @@ func main() {
 	} else {
 		zap.S().Info("注销成功:")
 	}
-
 }

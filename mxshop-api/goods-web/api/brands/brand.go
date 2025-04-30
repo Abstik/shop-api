@@ -30,19 +30,19 @@ func BrandList(ctx *gin.Context) {
 		return
 	}
 
-	result := make([]interface{}, 0)
+	data := make([]interface{}, 0)
 	reMap := make(map[string]interface{})
 	reMap["total"] = rsp.Total
-	for _, value := range rsp.Data[pnInt : pnInt*pSizeInt+pSizeInt] {
-		reMap := make(map[string]interface{})
-		reMap["id"] = value.Id
-		reMap["name"] = value.Name
-		reMap["logo"] = value.Logo
+	for _, value := range rsp.Data {
+		dataMap := make(map[string]interface{})
+		dataMap["id"] = value.Id
+		dataMap["name"] = value.Name
+		dataMap["logo"] = value.Logo
 
-		result = append(result, reMap)
+		data = append(data, dataMap)
 	}
 
-	reMap["data"] = result
+	reMap["data"] = data
 
 	ctx.JSON(http.StatusOK, reMap)
 }
@@ -114,6 +114,41 @@ func UpdateBrand(ctx *gin.Context) {
 }
 
 // 以下是品牌分类关联接口
+// 分页查询品牌分类关联列表
+func CategoryBrandList(ctx *gin.Context) {
+	rsp, err := global.GoodsSrvClient.CategoryBrandList(context.WithValue(context.Background(), "ginContext", ctx), &proto.CategoryBrandFilterRequest{})
+	if err != nil {
+		api.HandleGrpcErrorToHttp(err, ctx)
+		return
+	}
+	reMap := map[string]interface{}{
+		"total": rsp.Total,
+	}
+
+	data := make([]interface{}, 0)
+	for _, value := range rsp.Data {
+		dataMap := make(map[string]interface{})
+		dataMap["id"] = value.Id
+
+		// 封装分类信息
+		dataMap["category"] = map[string]interface{}{
+			"id":   value.Category.Id,
+			"name": value.Category.Name,
+		}
+
+		// 封装品牌信息
+		dataMap["brand"] = map[string]interface{}{
+			"id":   value.Brand.Id,
+			"name": value.Brand.Name,
+			"logo": value.Brand.Logo,
+		}
+
+		data = append(data, dataMap)
+	}
+
+	reMap["data"] = data
+	ctx.JSON(http.StatusOK, reMap)
+}
 
 // 根据分类id获取此分类对应的品牌列表
 func GetCategoryBrandList(ctx *gin.Context) {
@@ -145,42 +180,6 @@ func GetCategoryBrandList(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-// 分页查询品牌分类关联列表
-func CategoryBrandList(ctx *gin.Context) {
-	rsp, err := global.GoodsSrvClient.CategoryBrandList(context.WithValue(context.Background(), "ginContext", ctx), &proto.CategoryBrandFilterRequest{})
-	if err != nil {
-		api.HandleGrpcErrorToHttp(err, ctx)
-		return
-	}
-	reMap := map[string]interface{}{
-		"total": rsp.Total,
-	}
-
-	result := make([]interface{}, 0)
-	for _, value := range rsp.Data {
-		reMap := make(map[string]interface{})
-		reMap["id"] = value.Id
-
-		// 封装分类信息
-		reMap["category"] = map[string]interface{}{
-			"id":   value.Category.Id,
-			"name": value.Category.Name,
-		}
-
-		// 封装品牌信息
-		reMap["brand"] = map[string]interface{}{
-			"id":   value.Brand.Id,
-			"name": value.Brand.Name,
-			"logo": value.Brand.Logo,
-		}
-
-		result = append(result, reMap)
-	}
-
-	reMap["data"] = result
-	ctx.JSON(http.StatusOK, reMap)
-}
-
 // 新增品牌分类关联（根据分类id和品牌id）
 func NewCategoryBrand(ctx *gin.Context) {
 	categoryBrandForm := forms.CategoryBrandForm{}
@@ -202,6 +201,23 @@ func NewCategoryBrand(ctx *gin.Context) {
 	response["id"] = rsp.Id
 
 	ctx.JSON(http.StatusOK, response)
+}
+
+// 删除品牌分类关联
+func DeleteCategoryBrand(ctx *gin.Context) {
+	id := ctx.Param("id")
+	i, err := strconv.ParseInt(id, 10, 32)
+	if err != nil {
+		ctx.Status(http.StatusNotFound)
+		return
+	}
+	_, err = global.GoodsSrvClient.DeleteCategoryBrand(context.WithValue(context.Background(), "ginContext", ctx), &proto.CategoryBrandRequest{Id: int32(i)})
+	if err != nil {
+		api.HandleGrpcErrorToHttp(err, ctx)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "")
 }
 
 // 修改品牌分类关联
@@ -230,21 +246,4 @@ func UpdateCategoryBrand(ctx *gin.Context) {
 		return
 	}
 	ctx.Status(http.StatusOK)
-}
-
-// 删除品牌分类关联
-func DeleteCategoryBrand(ctx *gin.Context) {
-	id := ctx.Param("id")
-	i, err := strconv.ParseInt(id, 10, 32)
-	if err != nil {
-		ctx.Status(http.StatusNotFound)
-		return
-	}
-	_, err = global.GoodsSrvClient.DeleteCategoryBrand(context.WithValue(context.Background(), "ginContext", ctx), &proto.CategoryBrandRequest{Id: int32(i)})
-	if err != nil {
-		api.HandleGrpcErrorToHttp(err, ctx)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, "")
 }

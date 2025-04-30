@@ -12,14 +12,16 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"hash"
 	"io"
 	"io/ioutil"
-	"mxshop-api/oss-web/global"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
+
+	"mxshop-api/oss-web/global"
 )
 
 // 请填写您的AccessKeyId。
@@ -56,11 +58,11 @@ type ConfigStruct struct {
 }
 
 type PolicyToken struct {
+	Policy      string `json:"policy"`
+	Signature   string `json:"signature"`
 	AccessKeyId string `json:"accessid"`
 	Host        string `json:"host"`
 	Expire      int64  `json:"expire"`
-	Signature   string `json:"signature"`
-	Policy      string `json:"policy"`
 	Directory   string `json:"dir"`
 	Callback    string `json:"callback"`
 }
@@ -202,7 +204,7 @@ func GetMD5FromNewAuthString(ctx *gin.Context) ([]byte, string, error) {
 *   2>生成新的MD5鉴权串 : 把Request中的url中的path部分进行urldecode， 加上url的query部分， 再加上body， 组合之后进行MD5编码， 得到MD5鉴权字节串。
 *   3>解码Request携带的鉴权串 ： 获取RequestHeader的"authorization"字段， 对其进行Base64解码，作为签名验证的鉴权对比串。
 *   rsa.VerifyPKCS1v15进行签名验证，返回验证结果。
-* */
+ */
 func VerifySignature(bytePublicKey []byte, byteMd5 []byte, authorization []byte) bool {
 	pubBlock, _ := pem.Decode(bytePublicKey)
 	if pubBlock == nil {

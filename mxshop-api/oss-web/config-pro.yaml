@@ -1,6 +1,6 @@
-host: '192.168.0.104'
+host: '192.168.26.2'
 port: 8848
-namespace: '89cdf9b9-aac2-40df-920c-113fc42d85d4'
+namespace: 'fae5194a-fcb2-43b4-8adc-53d6bb79d31b'
 user: 'nacos'
 password: 'nacos'
 dataid: 'oss-web.json'

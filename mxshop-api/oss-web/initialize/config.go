@@ -37,7 +37,7 @@ func InitConfig() {
 	if err := v.Unmarshal(global.NacosConfig); err != nil {
 		panic(err)
 	}
-	zap.S().Infof("配置信息: &v", global.NacosConfig)
+	zap.S().Infof("nacos配置信息: %v", global.NacosConfig)
 
 	//从nacos中读取配置信息
 	sc := []constant.ServerConfig{
@@ -79,6 +79,5 @@ func InitConfig() {
 	if err != nil {
 		zap.S().Fatalf("读取nacos配置失败： %s", err.Error())
 	}
-	fmt.Println(&global.ServerConfig)
-
+	zap.S().Infof("服务配置信息：%v", global.ServerConfig)
 }
