@@ -4,7 +4,7 @@ go 1.23.1
 
 require (
 	github.com/alibaba/sentinel-golang v1.0.0
-	github.com/aliyun/alibaba-cloud-sdk-go v1.61.508
+	github.com/aliyun/credentials-go v1.4.6
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.9.1-0.20230302001220-a889c58de787
 	github.com/go-playground/locales v0.14.1
@@ -24,14 +24,18 @@ require (
 	github.com/stretchr/testify v1.8.2
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	go.uber.org/zap v1.16.0
-	golang.org/x/net v0.7.0
+	golang.org/x/net v0.20.0
 	google.golang.org/grpc v1.32.0
 	google.golang.org/protobuf v1.28.1
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 )
 
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
+	github.com/alibabacloud-go/debug v1.0.1 // indirect
+	github.com/alibabacloud-go/tea v1.2.2 // indirect
+	github.com/aliyun/alibaba-cloud-sdk-go v1.61.508 // indirect
 	github.com/armon/go-metrics v0.3.2 // indirect
 	github.com/buger/jsonparser v0.0.0-20181115193947-bf1c66bbce23 // indirect
 	github.com/bytedance/sonic v1.8.2 // indirect
@@ -85,15 +89,14 @@ require (
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.5.0 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
-	golang.org/x/crypto v0.5.0 // indirect
+	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b // indirect
-	golang.org/x/sys v0.5.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
-	gopkg.in/ini.v1 v1.51.0 // indirect
+	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

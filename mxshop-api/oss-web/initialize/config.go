@@ -73,8 +73,7 @@ func InitConfig() {
 	if err != nil {
 		panic(err)
 	}
-	//fmt.Println(content) //字符串 - yaml
-	//想要将一个json字符串转换成struct，需要去设置这个struct的tag
+
 	err = json.Unmarshal([]byte(content), &global.ServerConfig)
 	if err != nil {
 		zap.S().Fatalf("读取nacos配置失败： %s", err.Error())

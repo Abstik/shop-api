@@ -21,10 +21,13 @@ type ServerConfig struct {
 
 type OssConfig struct {
 	ApiKey      string `mapstructure:"key" json:"key"`
-	ApiSecrect  string `mapstructure:"secrect" json:"secrect"`
+	ApiSecret   string `mapstructure:"secret" json:"secret"`
 	Host        string `mapstructure:"host" json:"host"`
 	CallBackUrl string `mapstructure:"callback_url" json:"callback_url"`
 	UploadDir   string `mapstructure:"upload_dir" json:"upload_dir"`
+	Region      string `mapstructure:"region" json:"region"`
+	BucketName  string `mapstructure:"bucket_name" json:"bucket_name"`
+	RoleArn     string `mapstructure:"role_arn" json:"role_arn"`
 }
 
 type NacosConfig struct {
