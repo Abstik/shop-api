@@ -178,6 +178,33 @@ func Detail(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, reMap)
 }
 
+// 修改订单状态
+func Update(ctx *gin.Context) {
+	// 获取订单id参数
+	orderIdStr := ctx.Param("orderIdStr")
+	orderId, err := strconv.Atoi(orderIdStr)
+	if err != nil {
+		ctx.Status(http.StatusNotFound)
+		return
+	}
+
+	orderForm := forms.UpdateOrderForm{}
+	if err := ctx.ShouldBindJSON(&orderForm); err != nil {
+		api.HandleValidatorError(ctx, err)
+	}
+
+	// 修改订单状态
+	_, err = global.OrderSrvClient.UpdateOrderStatus(context.WithValue(context.Background(), "ginContext", ctx), &proto.OrderStatus{
+		Id:      int32(orderId),
+		OrderSn: orderForm.OrderSn,
+		Status:  orderForm.Status,
+	})
+	if err != nil {
+		zap.S().Errorw("修改订单状态失败")
+		api.HandleGrpcErrorToHttp(err, ctx)
+	}
+}
+
 // 生成支付宝url函数
 func GenerateAlipayUrl(ctx *gin.Context, orderSn string, total float32) (string, error) {
 	// 生成支付宝的支付url

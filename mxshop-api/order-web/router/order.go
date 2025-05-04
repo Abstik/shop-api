@@ -13,10 +13,10 @@ func InitOrderRouter(Router *gin.RouterGroup) {
 	// 订单相关路由组，并配置链路追踪
 	OrderRouter := Router.Group("orders").Use(middlewares.JWTAuth()).Use(middlewares.Trace())
 	{
-		OrderRouter.GET("", order.List)       // 订单列表
-		OrderRouter.POST("", order.New)       // 新建订单
-		OrderRouter.GET("/:id", order.Detail) // 订单详情
-		// TODO 更新订单状态接口
+		OrderRouter.GET("", order.List)                                  // 订单列表
+		OrderRouter.POST("", order.New)                                  // 新建订单
+		OrderRouter.GET("/:id", order.Detail)                            // 订单详情
+		OrderRouter.PUT("/:id", middlewares.IsAdminAuth(), order.Update) // 修改订单状态
 	}
 
 	// 支付宝回调通知（当用户在支付宝完成支付后，支付宝会调用这个接口给服务端进行通知）
