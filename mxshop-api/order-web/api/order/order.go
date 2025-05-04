@@ -178,33 +178,6 @@ func Detail(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, reMap)
 }
 
-// 修改订单状态
-func Update(ctx *gin.Context) {
-	// 获取订单id参数
-	orderIdStr := ctx.Param("orderIdStr")
-	orderId, err := strconv.Atoi(orderIdStr)
-	if err != nil {
-		ctx.Status(http.StatusNotFound)
-		return
-	}
-
-	orderForm := forms.UpdateOrderForm{}
-	if err := ctx.ShouldBindJSON(&orderForm); err != nil {
-		api.HandleValidatorError(ctx, err)
-	}
-
-	// 修改订单状态
-	_, err = global.OrderSrvClient.UpdateOrderStatus(context.WithValue(context.Background(), "ginContext", ctx), &proto.OrderStatus{
-		Id:      int32(orderId),
-		OrderSn: orderForm.OrderSn,
-		Status:  orderForm.Status,
-	})
-	if err != nil {
-		zap.S().Errorw("修改订单状态失败")
-		api.HandleGrpcErrorToHttp(err, ctx)
-	}
-}
-
 // 生成支付宝url函数
 func GenerateAlipayUrl(ctx *gin.Context, orderSn string, total float32) (string, error) {
 	// 生成支付宝的支付url
@@ -228,7 +201,7 @@ func GenerateAlipayUrl(ctx *gin.Context, orderSn string, total float32) (string,
 	var p = alipay.TradePagePay{}
 	p.NotifyURL = global.ServerConfig.AliPayInfo.NotifyURL
 	p.ReturnURL = global.ServerConfig.AliPayInfo.ReturnURL
-	p.Subject = "慕学生鲜订单-" + orderSn
+	p.Subject = "农视界订单-" + orderSn
 	p.OutTradeNo = orderSn
 	p.TotalAmount = strconv.FormatFloat(float64(total), 'f', 2, 64)
 	p.ProductCode = "FAST_INSTANT_TRADE_PAY"
