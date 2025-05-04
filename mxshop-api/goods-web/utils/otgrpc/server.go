@@ -35,7 +35,7 @@ func OpenTracingServerInterceptor(tracer opentracing.Tracer, optFuncs ...Option)
 	) (resp interface{}, err error) {
 		spanContext, err := extractSpanContext(ctx, tracer)
 		if err != nil && err != opentracing.ErrSpanContextNotFound {
-			// TODO: establish some sort of error reporting mechanism here. We
+			// establish some sort of error reporting mechanism here. We
 			// don't know where to put such an error and must rely on Tracer
 			// implementations to do something appropriate for the time being.
 		}
@@ -92,7 +92,7 @@ func OpenTracingStreamServerInterceptor(tracer opentracing.Tracer, optFuncs ...O
 	return func(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 		spanContext, err := extractSpanContext(ss.Context(), tracer)
 		if err != nil && err != opentracing.ErrSpanContextNotFound {
-			// TODO: establish some sort of error reporting mechanism here. We
+			// establish some sort of error reporting mechanism here. We
 			// don't know where to put such an error and must rely on Tracer
 			// implementations to do something appropriate for the time being.
 		}

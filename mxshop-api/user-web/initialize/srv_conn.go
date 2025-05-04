@@ -17,7 +17,7 @@ func InitSrvConn() {
 	consulInfo := global.ServerConfig.ConsulInfo
 
 	// 通过grpc连接到consul服务中心，通过服务发现机制访问已经注册的user_srv服务
-	/*通过global.ServerConfig.UserSrvInfo.Name这个服务名，consul会根据这个服务名查找相关的服务实例，然后返回其可用的地址和端口 ，客户端就可以连接到该服务*/
+	/*通过global.ServerConfig.GoodsSrvInfo.Name这个服务名，consul会根据这个服务名查找相关的服务实例，然后返回其可用的地址和端口 ，客户端就可以连接到该服务*/
 	userConn, err := grpc.Dial(
 		fmt.Sprintf("consul://%s:%d/%s?wait=14s", consulInfo.Host, consulInfo.Port, global.ServerConfig.UserSrvInfo.Name),
 		grpc.WithInsecure(),

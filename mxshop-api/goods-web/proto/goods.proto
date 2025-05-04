@@ -51,7 +51,7 @@ service Goods{
   // 修改轮播图
   rpc UpdateBanner(BannerRequest) returns(google.protobuf.Empty);
 
-  //品牌分类
+  //分类
   rpc CategoryBrandList(CategoryBrandFilterRequest) returns(CategoryBrandListResponse); //获取轮播列表信息
   // 通过分类获取此分类下的所有品牌
   rpc GetCategoryBrandList(CategoryInfoRequest) returns(BrandListResponse);

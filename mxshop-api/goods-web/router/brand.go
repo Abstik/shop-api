@@ -15,6 +15,7 @@ func InitBrandRouter(Router *gin.RouterGroup) {
 		BrandRouter.DELETE("/:id", middlewares.JWTAuth(), middlewares.IsAdminAuth(), brands.DeleteBrand) // 删除品牌
 		BrandRouter.POST("", middlewares.JWTAuth(), middlewares.IsAdminAuth(), brands.NewBrand)          // 新建品牌
 		BrandRouter.PUT("/:id", middlewares.JWTAuth(), middlewares.IsAdminAuth(), brands.UpdateBrand)    // 修改品牌信息
+		//BrandRouter.GET("/:id", brands.GetBrand)                                                         // 根据id查询品牌信息
 	}
 
 	// 品牌和分类相关路由组

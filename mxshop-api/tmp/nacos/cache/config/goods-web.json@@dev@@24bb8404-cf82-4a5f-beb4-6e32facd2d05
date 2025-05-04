@@ -6,6 +6,9 @@
   "goods_srv": {
     "name": "goods-srv"
   },
+  "inventory_srv": {
+    "name": "inventory-srv"
+  },
   "jwt": {
     "key": "5$!UEmvB#nRB@Iwab#Sy!zofKEOGLRtE"
   },

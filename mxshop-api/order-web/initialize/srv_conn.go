@@ -15,8 +15,9 @@ import (
 
 func InitSrvConn() {
 	consulInfo := global.ServerConfig.ConsulInfo
+
 	goodsConn, err := grpc.Dial(
-		fmt.Sprintf("consul://%s:%d/%s?wait=14s", consulInfo.Host, consulInfo.Port, global.ServerConfig.OrderSrvInfo.Name),
+		fmt.Sprintf("consul://%s:%d/%s?wait=14s", consulInfo.Host, consulInfo.Port, global.ServerConfig.GoodsSrvInfo.Name),
 		grpc.WithInsecure(),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy": "round_robin"}`),                    // 指定负载均衡策略为“轮询”（round robin）
 		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())), // 添加OpenTracing客户端拦截器
@@ -24,7 +25,6 @@ func InitSrvConn() {
 	if err != nil {
 		zap.S().Fatal("[InitSrvConn] 连接 【商品服务失败】")
 	}
-
 	global.GoodsSrvClient = proto.NewGoodsClient(goodsConn)
 
 	orderConn, err := grpc.Dial(
@@ -36,7 +36,6 @@ func InitSrvConn() {
 	if err != nil {
 		zap.S().Fatal("[InitSrvConn] 连接 【订单服务失败】")
 	}
-
 	global.OrderSrvClient = proto.NewOrderClient(orderConn)
 
 	invConn, err := grpc.Dial(
@@ -48,7 +47,6 @@ func InitSrvConn() {
 	if err != nil {
 		zap.S().Fatal("[InitSrvConn] 连接 【库存服务失败】")
 	}
-
 	global.InventorySrvClient = proto.NewInventoryClient(invConn)
 
 }

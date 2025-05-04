@@ -155,7 +155,6 @@ message CategoryBrandListResponse {
 }
 
 
-
 message BatchGoodsIdInfo {
     repeated int32 id = 1;
 }
@@ -222,7 +221,6 @@ message GoodsFilterRequest  {
     string keyWords = 9;
     int32 brand = 10;
 }
-
 
 message GoodsInfoResponse {
     int32 id = 1;

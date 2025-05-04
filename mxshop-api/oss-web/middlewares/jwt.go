@@ -2,12 +2,14 @@ package middlewares
 
 import (
 	"errors"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
-	"mxshop-api/oss-web/global"
-	"mxshop-api/oss-web/models"
 	"net/http"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+
+	"mxshop-api/oss-web/global"
+	"mxshop-api/oss-web/models"
 )
 
 func JWTAuth() gin.HandlerFunc {
@@ -25,14 +27,12 @@ func JWTAuth() gin.HandlerFunc {
 		// parseToken 解析token包含的信息
 		claims, err := j.ParseToken(token)
 		if err != nil {
-			if err == TokenExpired {
-				if err == TokenExpired {
-					c.JSON(http.StatusUnauthorized, map[string]string{
-						"msg": "授权已过期",
-					})
-					c.Abort()
-					return
-				}
+			if errors.Is(err, TokenExpired) {
+				c.JSON(http.StatusUnauthorized, map[string]string{
+					"msg": "授权已过期",
+				})
+				c.Abort()
+				return
 			}
 
 			c.JSON(http.StatusUnauthorized, "未登陆")

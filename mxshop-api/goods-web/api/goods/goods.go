@@ -2,7 +2,6 @@ package goods
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -19,7 +18,6 @@ import (
 
 // 查询商品列表（指定条件进行过滤）
 func List(ctx *gin.Context) {
-	fmt.Println("商品列表")
 	// 常见请求结构体，用来封装请求参数
 	request := &proto.GoodsFilterRequest{}
 
@@ -97,15 +95,16 @@ func List(ctx *gin.Context) {
 	goodsList := make([]interface{}, 0)
 	for _, value := range r.Data {
 		goodsList = append(goodsList, map[string]interface{}{
-			"id":          value.Id,
-			"name":        value.Name,
-			"goods_brief": value.GoodsBrief,
-			"desc":        value.GoodsDesc,
-			"ship_free":   value.ShipFree,
-			"images":      value.Images,
-			"desc_images": value.DescImages,
-			"front_image": value.GoodsFrontImage,
-			"shop_price":  value.ShopPrice,
+			"id":           value.Id,
+			"name":         value.Name,
+			"goods_sn":     value.GoodsSn,
+			"market_price": value.MarketPrice,
+			"shop_price":   value.ShopPrice,
+			"goods_brief":  value.GoodsBrief,
+			"ship_free":    value.ShipFree,
+			"images":       value.Images,
+			"desc_images":  value.DescImages,
+			"front_image":  value.GoodsFrontImage,
 			"category": map[string]interface{}{
 				"id":   value.Category.Id,
 				"name": value.Category.Name,
@@ -140,7 +139,6 @@ func New(ctx *gin.Context) {
 	rsp, err := goodsClient.CreateGoods(context.WithValue(context.Background(), "ginContext", ctx), &proto.CreateGoodsInfo{
 		Name:            goodsForm.Name,
 		GoodsSn:         goodsForm.GoodsSn,
-		Stocks:          goodsForm.Stocks,
 		MarketPrice:     goodsForm.MarketPrice,
 		ShopPrice:       goodsForm.ShopPrice,
 		GoodsBrief:      goodsForm.GoodsBrief,
@@ -156,13 +154,23 @@ func New(ctx *gin.Context) {
 		return
 	}
 
+	// 设置库存
+	_, err = global.InventorySrvClient.SetInv(context.WithValue(context.Background(), "ginContext", ctx), &proto.GoodsInvInfo{
+		GoodsId: rsp.Id,
+		Num:     goodsForm.Stocks,
+	})
+	if err != nil {
+		api.HandleGrpcErrorToHttp(err, ctx)
+		return
+	}
+
 	ctx.JSON(http.StatusOK, rsp)
 }
 
 // 查询商品详情
 func Detail(ctx *gin.Context) {
-	id := ctx.Param("id")
-	i, err := strconv.ParseInt(id, 10, 32)
+	idStr := ctx.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
 		ctx.Status(http.StatusNotFound)
 		return
@@ -171,7 +179,16 @@ func Detail(ctx *gin.Context) {
 	// 把当前的 gin.Context（变量名是ctx）塞入go语言的context.Context中，并指定键名为ginContext
 	// 改造后的otgrpc源码中，通过context.Context获取gin.Context，通过gin.Context获取tracer和parentSpan
 	r, err := global.GoodsSrvClient.GetGoodsDetail(context.WithValue(context.Background(), "ginContext", ctx), &proto.GoodInfoRequest{
-		Id: int32(i),
+		Id: int32(id),
+	})
+	if err != nil {
+		api.HandleGrpcErrorToHttp(err, ctx)
+		return
+	}
+
+	// 查询库存信息
+	invDetail, err := global.InventorySrvClient.InvDetail(context.WithValue(context.Background(), "ginContext", ctx), &proto.GoodsInvInfo{
+		GoodsId: int32(id),
 	})
 	if err != nil {
 		api.HandleGrpcErrorToHttp(err, ctx)
@@ -179,27 +196,29 @@ func Detail(ctx *gin.Context) {
 	}
 
 	rsp := map[string]interface{}{
-		"id":          r.Id,
-		"name":        r.Name,
-		"goods_brief": r.GoodsBrief,
-		"desc":        r.GoodsDesc,
-		"ship_free":   r.ShipFree,
-		"images":      r.Images,
-		"desc_images": r.DescImages,
-		"front_image": r.GoodsFrontImage,
-		"shop_price":  r.ShopPrice,
+		"idStr":        r.Id,
+		"name":         r.Name,
+		"goods_brief":  r.GoodsBrief,
+		"ship_free":    r.ShipFree,
+		"market_price": r.MarketPrice,
+		"goods_sn":     r.GoodsSn,
+		"images":       r.Images,
+		"desc_images":  r.DescImages,
+		"front_image":  r.GoodsFrontImage,
+		"shop_price":   r.ShopPrice,
 		"category": map[string]interface{}{
-			"id":   r.Category.Id,
-			"name": r.Category.Name,
+			"idStr": r.Category.Id,
+			"name":  r.Category.Name,
 		},
 		"brand": map[string]interface{}{
-			"id":   r.Brand.Id,
-			"name": r.Brand.Name,
-			"logo": r.Brand.Logo,
+			"idStr": r.Brand.Id,
+			"name":  r.Brand.Name,
+			"logo":  r.Brand.Logo,
 		},
 		"is_hot":  r.IsHot,
 		"is_new":  r.IsNew,
 		"on_sale": r.OnSale,
+		"stocks":  invDetail.Num,
 	}
 	ctx.JSON(http.StatusOK, rsp)
 }
@@ -222,17 +241,6 @@ func Delete(ctx *gin.Context) {
 	return
 }
 
-// TODO 商品的库存
-func Stocks(ctx *gin.Context) {
-	id := ctx.Param("id")
-	_, err := strconv.ParseInt(id, 10, 32)
-	if err != nil {
-		ctx.Status(http.StatusNotFound)
-		return
-	}
-	return
-}
-
 // 修改商品状态
 func UpdateStatus(ctx *gin.Context) {
 	goodsStatusForm := forms.GoodsStatusForm{}
@@ -252,6 +260,7 @@ func UpdateStatus(ctx *gin.Context) {
 		api.HandleGrpcErrorToHttp(err, ctx)
 		return
 	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"msg": "修改成功",
 	})
@@ -271,7 +280,6 @@ func Update(ctx *gin.Context) {
 		Id:              int32(i),
 		Name:            goodsForm.Name,
 		GoodsSn:         goodsForm.GoodsSn,
-		Stocks:          goodsForm.Stocks,
 		MarketPrice:     goodsForm.MarketPrice,
 		ShopPrice:       goodsForm.ShopPrice,
 		GoodsBrief:      goodsForm.GoodsBrief,
@@ -285,6 +293,16 @@ func Update(ctx *gin.Context) {
 		api.HandleGrpcErrorToHttp(err, ctx)
 		return
 	}
+
+	// 修改库存
+	if _, err = global.InventorySrvClient.SetInv(context.WithValue(context.Background(), "ginContext", ctx), &proto.GoodsInvInfo{
+		GoodsId: int32(i),
+		Num:     goodsForm.Stocks,
+	}); err != nil {
+		api.HandleGrpcErrorToHttp(err, ctx)
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"msg": "更新成功",
 	})

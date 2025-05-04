@@ -111,25 +111,6 @@ func Delete(ctx *gin.Context) {
 		return
 	}
 
-	//TODO 1. 先查询出该分类写的所有子分类
-	/*subCategoryList, err := global.GoodsSrvClient.GetSubCategory(context.WithValue(context.Background(), "ginContext", ctx), &proto.CategoryListRequest{
-		Id: int32(i),
-	})
-	if err != nil {
-		api.HandleGrpcErrorToHttp(err, ctx)
-		return
-	}
-	if subCategoryList != nil {
-		for _, subCategory := range subCategoryList.SubCategorys {
-			_, err = global.GoodsSrvClient.DeleteCategory(
-				context.WithValue(context.Background(), "ginContext", ctx),
-				&proto.DeleteCategoryRequest{Id: subCategory.Id},
-			)
-		}
-	}*/
-
-	//2. 将所有的分类全部逻辑删除
-	//3. 将该分类下的所有的商品逻辑删除
 	_, err = global.GoodsSrvClient.DeleteCategory(context.WithValue(context.Background(), "ginContext", ctx), &proto.DeleteCategoryRequest{Id: int32(i)})
 	if err != nil {
 		api.HandleGrpcErrorToHttp(err, ctx)

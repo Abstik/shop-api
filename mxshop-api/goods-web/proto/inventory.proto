@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+option go_package = ".;proto";
+
+service Inventory {
+    rpc SetInv(GoodsInvInfo) returns(google.protobuf.Empty); // 设置库存
+    rpc InvDetail(GoodsInvInfo) returns (GoodsInvInfo); // 获取库存信息(单个商品)
+    rpc Sell(SellInfo) returns (google.protobuf.Empty); // 库存扣减
+    rpc ReBack(SellInfo) returns(google.protobuf.Empty); // 库存归还
+}
+
+// 商品库存信息
+message GoodsInvInfo {
+    int32 goodsId = 1; // 商品id
+    int32 num = 2; // 库存数量的变化（新增或扣减的数量）
+}
+
+// 扣减库存信息
+message SellInfo {
+    repeated GoodsInvInfo goodsInfo = 1; // 商品库存信息
+    string orderSn = 2; // 订单号
+}

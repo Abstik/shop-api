@@ -90,7 +90,7 @@ func New(ctx *gin.Context) {
 		Id: itemForm.GoodsId,
 	})
 	if err != nil {
-		zap.S().Errorw("[List] 查询【商品信息】失败")
+		zap.S().Errorf("[List] 查询【商品信息】失败: %v", err)
 		api.HandleGrpcErrorToHttp(err, ctx)
 		return
 	}

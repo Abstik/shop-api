@@ -22,7 +22,7 @@ func InitGoodsRouter(Router *gin.RouterGroup) {
 		// 删除商品（需要管理员权限）
 		GoodsRouter.DELETE("/:id", middlewares.JWTAuth(), middlewares.IsAdminAuth(), goods.Delete)
 		// 获取商品的库存
-		GoodsRouter.GET("/:id/stocks", goods.Stocks)
+		//GoodsRouter.GET("/:id/stocks", goods.Stocks)
 		// 修改商品信息（需要管理员权限）
 		GoodsRouter.PUT("/:id", middlewares.JWTAuth(), middlewares.IsAdminAuth(), goods.Update)
 		// 修改商品状态（需要管理员权限）

@@ -47,6 +47,9 @@ func BrandList(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, reMap)
 }
 
+func GetBrand(ctx *gin.Context) {
+}
+
 func NewBrand(ctx *gin.Context) {
 	brandForm := forms.BrandForm{}
 	if err := ctx.ShouldBindJSON(&brandForm); err != nil {

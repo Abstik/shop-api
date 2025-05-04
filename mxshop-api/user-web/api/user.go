@@ -217,7 +217,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// 校验邮箱验证码
+	// 校验验证码
 	rdb := redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d", global.ServerConfig.RedisInfo.Host, global.ServerConfig.RedisInfo.Port),
 	})

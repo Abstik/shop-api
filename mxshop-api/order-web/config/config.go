@@ -6,9 +6,9 @@ type ServerConfig struct {
 	Port int      `mapstructure:"port" json:"port"`
 	Tags []string `mapstructure:"tags" json:"tags"`
 
-	GoodsSrvInfo     GoodsSrvConfig `mapstructure:"goods_srv" json:"goods_srv"`
-	OrderSrvInfo     GoodsSrvConfig `mapstructure:"order_srv" json:"order_srv"`
-	InventorySrvInfo GoodsSrvConfig `mapstructure:"order_srv" json:"inventory_srv"`
+	GoodsSrvInfo     SrvConfig `mapstructure:"goods_srv" json:"goods_srv"`
+	OrderSrvInfo     SrvConfig `mapstructure:"order_srv" json:"order_srv"`
+	InventorySrvInfo SrvConfig `mapstructure:"inventory_srv" json:"inventory_srv"`
 
 	JWTInfo    JWTConfig    `mapstructure:"jwt" json:"jwt"`
 	ConsulInfo ConsulConfig `mapstructure:"consul" json:"consul"`
@@ -16,7 +16,7 @@ type ServerConfig struct {
 	JaegerInfo JaegerConfig `mapstructure:"jaeger" json:"jaeger"`
 }
 
-type GoodsSrvConfig struct {
+type SrvConfig struct {
 	Name string `mapstructure:"name" json:"name"`
 }
 

@@ -11,6 +11,6 @@ func InitOssRouter(Router *gin.RouterGroup) {
 	{
 		//OssRouter.GET("token", middlewares.JWTAuth(), middlewares.IsAdminAuth(), handler.Token)
 		OssRouter.GET("token", handler.Token)
-		OssRouter.POST("/callback", handler.Callback)
+		OssRouter.POST("/callback", handler.HandlerRequest)
 	}
 }
