@@ -95,7 +95,6 @@ func New(ctx *gin.Context) {
 		return
 	}
 
-	/*将商品添加到购物车后，直接扣减库存，所以要先查询库存信息*/
 	// 获取商品的库存信息
 	invRsp, err := global.InventorySrvClient.InvDetail(context.WithValue(context.Background(), "ginContext", ctx), &proto.GoodsInvInfo{
 		GoodsId: itemForm.GoodsId,

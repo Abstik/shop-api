@@ -24,5 +24,4 @@ func IsAdminAuth() gin.HandlerFunc {
 		}
 		ctx.Next()
 	}
-
 }

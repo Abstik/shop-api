@@ -83,7 +83,8 @@ func (j *JWT) ParseToken(tokenString string) (*models.CustomClaims, error) {
 		return j.SigningKey, nil
 	})
 	if err != nil {
-		if ve, ok := err.(*jwt.ValidationError); ok {
+		var ve *jwt.ValidationError
+		if errors.As(err, &ve) {
 			/*ve.Errors 是一个位掩码，记录了 token 解析过程中遇到的各种错误。
 			jwt.ValidationErrorMalformed是一个常量，表示token格式不合法。
 			二者做按位与（&）运算：

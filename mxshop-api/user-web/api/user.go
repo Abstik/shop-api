@@ -70,7 +70,8 @@ func HandleGrpcErrorToHttp(err error, c *gin.Context) {
 
 // 对错误进行验证，如果是validator验证错误，则进行错误翻译提示
 func HandleValidatorError(c *gin.Context, err error) {
-	errs, ok := err.(validator.ValidationErrors)
+	var errs validator.ValidationErrors
+	ok := errors.As(err, &errs)
 	if !ok {
 		c.JSON(http.StatusOK, gin.H{
 			"msg": err.Error(),
@@ -137,12 +138,12 @@ func PassWordLogin(c *gin.Context) {
 	}
 
 	// 验证码验证
-	//if store.Verify(passwordLoginForm.CaptchaId, passwordLoginForm.Captcha, false) {
-	//	c.JSON(http.StatusBadRequest, gin.H{
-	//		"captcha": "验证码错误",
-	//	})
-	//	return
-	//}
+	if store.Verify(passwordLoginForm.CaptchaId, passwordLoginForm.Captcha, false) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"captcha": "验证码错误",
+		})
+		return
+	}
 
 	// 登录的逻辑
 	// 先查询用户是否存在
